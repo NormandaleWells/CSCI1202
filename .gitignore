@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# MSVC specific
+out/
+.vs/
+
+test_data/

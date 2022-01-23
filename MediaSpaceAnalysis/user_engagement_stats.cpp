@@ -58,6 +58,11 @@ struct Command_line_params
 	string_vec dirs_to_process;
 };
 
+/*
+	set_current_directory
+
+	Attempts to make the given directory the current directory.
+*/
 void set_current_directory(const std::string& new_dir)
 {
 	std::error_code ec;
@@ -70,6 +75,13 @@ void set_current_directory(const std::string& new_dir)
 	throw std::runtime_error(ss.str());
 }
 
+/*
+	parse_cl_params
+
+	Parses the command-line parameters.  The only error checking done
+	here is verification that any option that requires a parameter has
+	one, and no unknown parameters are specfied.
+*/
 void parse_cl_params(int argc, char* argv[], Command_line_params& cl)
 {
 	for (int i = 1; i < argc; i++)
@@ -106,6 +118,23 @@ void parse_cl_params(int argc, char* argv[], Command_line_params& cl)
 	}
 }
 
+/*
+	verify_cl_params
+
+	Verifies that the command-line parameters are valid.  That is, it checks
+	the following:
+
+	(1)	That the base directory (if given) is valid.
+	(2)	That the class list file exists and is a file.
+	(3) That all the specified directories to process exist and are directories.
+	
+	It also has the following side-effects:
+
+	(1)	The current directory is set to the base directory.
+	(2) If no directories are given on the command line, it fills the
+		dirs_to_process field to all the subdirectories of the base
+		directory (non-recursively).
+*/
 void verify_cl_params(Command_line_params& cl)
 {
 	if (!cl.base_dir.empty())
@@ -117,7 +146,7 @@ void verify_cl_params(Command_line_params& cl)
 	if (!exists(class_list_path))
 	{
 		std::stringstream ss;
-		ss << class_list_path.string() << " does not exist.";
+		ss << class_list_path << " does not exist.";
 		throw std::runtime_error(ss.str());
 	}
 
@@ -125,7 +154,7 @@ void verify_cl_params(Command_line_params& cl)
 	if (type != fs::file_type::regular)
 	{
 		std::stringstream ss;
-		ss << "\"" << class_list_path << "\" is not a file.\n";
+		ss << class_list_path << " is not a file.\n";
 		throw std::runtime_error(ss.str());
 	}
 
@@ -146,7 +175,7 @@ void verify_cl_params(Command_line_params& cl)
 		if (!exists(dir_path))
 		{
 			std::stringstream ss;
-			ss << "\"" << dir_path << "\" does not exist.\n";
+			ss << dir_path << " does not exist.\n";
 			throw std::runtime_error(ss.str());
 		}
 
@@ -154,7 +183,7 @@ void verify_cl_params(Command_line_params& cl)
 		if (type != fs::file_type::directory)
 		{
 			std::stringstream ss;
-			ss << "\"" << dir_path << "\" is not a directory.\n";
+			ss << dir_path << " is not a directory.\n";
 			throw std::runtime_error(ss.str());
 		}
 	}

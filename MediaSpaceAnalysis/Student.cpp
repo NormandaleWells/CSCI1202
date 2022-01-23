@@ -17,7 +17,7 @@ student_vec read_class_list(const std::string& class_list_name)
 	if (!class_list_file)
 	{
 		std::stringstream ss;
-		ss << "Could not open " << class_list_name;
+		ss << "Could not open " << class_list_path;
 		throw std::runtime_error(ss.str());
 	}
 

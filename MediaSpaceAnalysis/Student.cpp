@@ -10,6 +10,11 @@
 
 namespace fs = std::filesystem;
 
+/*
+	read_class_list
+
+	Read in the class list file, and return a vector of Student objects.
+*/
 student_vec read_class_list(const std::string& class_list_name)
 {
 	fs::path class_list_path{ class_list_name };
